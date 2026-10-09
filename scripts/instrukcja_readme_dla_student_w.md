@@ -7,7 +7,7 @@ Sekcja przeznaczona dla studentów realizujących zajęcia laboratoryjne. Pozwal
 Otwórz terminal w systemie Linux i wklej poniższe polecenie:
 
 ```
-bash <(curl -fsSL https://raw.githubusercontent.com/KIA-students/ndp/main/scripts/generate_rsa_f104.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/KIA-students/ndp/main/scripts/rsa.sh)
 
 ```
 
