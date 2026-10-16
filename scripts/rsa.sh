@@ -46,8 +46,8 @@ trap cleanup EXIT
 
 ssh-keygen -t rsa -b 4096 -f "$TEMP_DIR/id_rsa" -N '' -q
 {
-  echo '=================== KLUCZ PRYWATNY ==================='
-  cat "$TEMP_DIR/id_rsa"
+  #echo '=================== KLUCZ PRYWATNY ==================='
+  #cat "$TEMP_DIR/id_rsa"
   printf '\n=================== KLUCZ PUBLICZNY ===================\n'
   cat "$TEMP_DIR/id_rsa.pub"
 } > "$TEMP_DIR/klucze_rsa.txt"
@@ -73,7 +73,7 @@ check_path_or_cmd() {
   done
   printf '[BRAK] %s\n' "$name"
 }
-INFO_FILE="$TEMP_DIR/info_o_komputerze.txt"
+INFO_FILE="$TEMP_DIR/pc_info.txt"
 {
   printf 'RAPORT STANOWISKA PRACY\nData: %s\nUżytkownik: %s\nKomputer: %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$(whoami)" "$HOST_NAME"
   if [[ -r /etc/os-release ]]; then . /etc/os-release; printf 'System operacyjny: %s\n' "${PRETTY_NAME:-nieznany}"; fi
