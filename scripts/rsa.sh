@@ -4,6 +4,10 @@ umask 077
 #chmod +x rsa.sh
 #./rsa.sh
 
+# bash <(curl -s https://raw.githubusercontent.com/KIA-students/ndp/main/scripts/rsa.sh)
+# lub
+# wget -qO- https://raw.githubusercontent.com/KIA-students/ndp/main/scripts/rsa.sh | bash
+
 REPO_OWNER='KIA-students'
 REPO_NAME='ndp'
 TARGET_SUBDIR='f104'
