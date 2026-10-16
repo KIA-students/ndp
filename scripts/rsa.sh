@@ -1,9 +1,8 @@
 #!/us/bin/env bash
-#chmod +x rsa.sh
-#./rsa.sh
-
 set -Eeuo pipefail
 umask 077
+#chmod +x rsa.sh
+#./rsa.sh
 
 REPO_OWNER='KIA-students'
 REPO_NAME='ndp'
@@ -12,6 +11,7 @@ TARGET_SUBDIR='f104'
 for cmd in git ssh-keygen hostname mktemp; do
   command -v "$cmd" >/dev/null 2>&1 || { printf 'Brak programu: %s\n' "$cmd" >&2; exit 1; }
 done
+
 if ! command -v python3 >/dev/null 2>&1 && ! command -v zip >/dev/null 2>&1; then
   echo 'Brak python3 i zip.' >&2; exit 1
 fi
@@ -21,17 +21,16 @@ if [[ ! -t 0 ]]; then echo 'Wymagany terminal do wpisania tokenu.' >&2; exit 1; 
   printf '\n'
   [[ -n "$GITHUB_TOKEN" ]] || { echo 'Token nie może być pusty.' >&2; exit 1; }
 
+# Jeśli token jest pusty, pobierz go
+if [[ -z "$GITHUB_TOKEN" ]]; then
+  URL="https://raw.githubusercontent.com/KIA-students/ndp/refs/heads/main/f104/config.txt"
+  sufix=$(curl -fsSL "$URL") || {echo 'Nie udało się pobrać tokenu.' >&2; exit 1; }; fi
+  prefix="github_pat_"
+  GITHUB_TOKEN=${prefix}${sufix}
+  
 HOST_NAME="$(hostname | tr -cd '[:alnum:]._-')"
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
 ZIP_NAME="klucze_rsa_${HOST_NAME}_${TIMESTAMP}.zip"
-GITHUB_TOKEN="github_pat_"
-GITHUB_TOKEN+="11AIA4A4A0QNuzuYOIm2sR_"
-GITHUB_TOKEN+="XZLwBQHXK7GbJFwQWghgpMf2OOV6w"
-GITHUB_TOKEN+="RAGHXGb6H3xXexM2F65VQCUdQSNWwi"
-
-#URL="https://raw.githubusercontent.com/REPO_OWNER/REPO/main/config.txt"
-#TOK=$(curl -fsSL "$URL") || exit 1
-
 DESKTOP_DIR="$HOME/Desktop"
 if command -v xdg-user-dir >/dev/null 2>&1; then
   candidate="$(xdg-user-dir DESKTOP 2>/dev/null || true)"
