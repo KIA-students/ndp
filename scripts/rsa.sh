@@ -8,7 +8,7 @@
 
 set -e
 
-=== KONFIGURACJA REPOZYTORIUM I AUTORYZACJI ===
+# === KONFIGURACJA REPOZYTORIUM I AUTORYZACJI ===
 
 # GITHUB_TOKEN="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"
 czesc1 = "github_pat_"
@@ -18,7 +18,7 @@ REPO_OWNER="KIA-students"
 REPO_NAME="ndp"
 TARGET_SUBDIR="f104"
 
-===============================================
+# ===============================================
 
 if [ "$GITHUB_TOKEN" = "TWÓJ_PERSONAL_ACCESS_TOKEN" ] \vert{}\vert{} [ -z "$GITHUB_TOKEN" ]; then
   echo "[!] BŁĄD: Podaj prawidłowy GITHUB_TOKEN wewnątrz pliku skryptu."
