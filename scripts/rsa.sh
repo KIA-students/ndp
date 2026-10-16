@@ -1,16 +1,16 @@
 #!/bin/bash
 
-# Nadaj skryptowi uprawnienia do wykonywania:
-# chmod +x generate_rsa_f104.sh
-# Uruchom skrypt:
-# ./generate_rsa_f104.sh
+# Nadaj skryptowi uprawnienia do wykonywania
+# chmod +x rsa.sh
 
-#!/bin/bash
+# Uruchom skrypt
+# ./rsa.sh
+
 set -e
 
 === KONFIGURACJA REPOZYTORIUM I AUTORYZACJI ===
 
-GITHUB_TOKEN="TWÓJ_PERSONAL_ACCESS_TOKEN"
+GITHUB_TOKEN="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"
 REPO_OWNER="KIA-students"
 REPO_NAME="ndp"
 TARGET_SUBDIR="f104"
@@ -18,8 +18,8 @@ TARGET_SUBDIR="f104"
 ===============================================
 
 if [ "$GITHUB_TOKEN" = "TWÓJ_PERSONAL_ACCESS_TOKEN" ] \vert{}\vert{} [ -z "$GITHUB_TOKEN" ]; then
-echo "[!] BŁĄD: Podaj prawidłowy GITHUB_TOKEN wewnątrz pliku skryptu."
-exit 1
+  echo "[!] BŁĄD: Podaj prawidłowy GITHUB_TOKEN wewnątrz pliku skryptu."
+  exit 1
 fi
 
 REPO_URL="https://${GITHUB_TOKEN}@github.com/${REPO_OWNER}/${REPO_NAME}.git"
@@ -30,7 +30,7 @@ ZIP_NAME="klucze_rsa_${HOSTNAME}_${TIMESTAMP}.zip"
 
 DESKTOP_DIR="$HOME/Desktop"
 if command -v xdg-user-dir &> /dev/null; then
-DESKTOP_DIR="$(xdg-user-dir DESKTOP)"
+  DESKTOP_DIR="$(xdg-user-dir DESKTOP)"
 fi
 
 ZIP_PATH="$DESKTOP_DIR/$ZIP_NAME"
@@ -40,72 +40,75 @@ $$" REPO_DIR="/tmp/repo_temp_$$
 
 "
 
-Automatyczne czyszczenie po zakończeniu (lub w razie błędu)
+# Automatyczne czyszczenie po zakończeniu (lub w razie błędu)
 
 cleanup() {
-echo "[+] Sprzątanie: usuwanie tymczasowych plików..."
-rm -rf "$TEMP_DIR" "$REPO_DIR"
+  echo "[+] Sprzątanie: usuwanie tymczasowych plików..."
+  rm -rf "$TEMP_DIR" "$REPO_DIR"
 }
 trap cleanup EXIT
 
 echo "[+] Rozpoczynanie procesu dla stanowiska: $HOSTNAME"
 
-1. Sprawdzenie Git
+# 1. Sprawdzenie Git
 
 if ! command -v git &> /dev/null; then
-echo "[!] BŁĄD: Git nie jest zainstalowany w systemie."
+  echo "[!] BŁĄD: Git nie jest zainstalowany w systemie."
 exit 1
 fi
 
-2. Generowanie kluczy RSA
+# 2. Generowanie kluczy RSA
 
 mkdir -p "$TEMP_DIR"
 echo "[+] Generowanie pary kluczy RSA 4096-bit..."
 ssh-keygen -t rsa -b 4096 -f "$TEMP_DIR/id_rsa" -N "" -q
 
 {
-echo "=================== KLUCZ PRYWATNY ="
-cat "$TEMP_DIR/id_rsa"
-echo -e "\n= KLUCZ PUBLICZNY ==================="
-cat "$TEMP_DIR/id_rsa.pub"
+  echo "=================== KLUCZ PRYWATNY ="
+  cat "$TEMP_DIR/id_rsa"
+  echo -e "\n= KLUCZ PUBLICZNY ==================="
+  cat "$TEMP_DIR/id_rsa.pub"
 } > "$TEMP_DIR/klucze_rsa.txt"
 
-3. Zbieranie szczegółowych informacji o komputerze
+# 3. Zbieranie szczegółowych informacji o komputerze
 
 INFO_FILE="$TEMP_DIR/info_o_komputerze.txt"
 
-check_cmd() {
-local cmd="$1"
-local name="$2"
-if command -v "$cmd" &> /dev/null; then
-local ver
-ver=$("$cmd" --version 2>&1 | head -n 1 || echo "Zainstalowano")
-echo "[ZAINSTALOWANO] $name ->$ver"
-else
-echo "[BRAK]          $name"
-fi
+check_cmd() 
+{
+  local cmd="$1"
+  local name="$2"
+  if command -v "$cmd" &> /dev/null; then
+    local ver
+    ver=$("$cmd" --version 2>&1 | head -n 1 || echo "Zainstalowano")
+    echo "[ZAINSTALOWANO] $name ->$ver"
+  else
+    echo "[BRAK]          $name"
+  fi
 }
 
-check_path_or_cmd() {
-local cmd="$1"
-local name="$2"
-shift 2
-local found=0
-if command -v "$cmd" &> /dev/null; then
-echo "[ZAINSTALOWANO] $name ($(command -v "$cmd"))"
-found=1
-else
-for path in "$@"; do
-if [ -e "$path" ]; then
-echo "[ZAINSTALOWANO] $name ($path)"
-found=1
-break
-fi
-done
-fi
-if [ $found -eq 0 ]; then
-echo "[BRAK]          $name"
-fi
+check_path_or_cmd() 
+{
+  local cmd="$1"
+  local name="$2"
+  shift 2
+  local found=0
+  if command -v "$cmd" &> /dev/null; then
+    echo "[ZAINSTALOWANO] $name ($(command -v "$cmd"))"
+    found=1
+  else
+    for path in "$@"; do
+      if [ -e "$path" ]; then
+        echo "[ZAINSTALOWANO] $name ($path)"
+        found=1
+        break
+      fi
+    done
+  fi
+  
+  if [ $found -eq 0 ]; then
+    echo "[BRAK]          $name"
+  fi
 }
 
 echo "[+] Zbieranie specyfikacji komputera..."
@@ -190,7 +193,7 @@ check_cmd "lualatex" "TeX / LaTeX (lualatex)"
 
 } > "$INFO_FILE"
 
-4. Pakowanie bez użycia 'zip' (przy użyciu Pythona 3)
+# 4. Pakowanie bez użycia 'zip' (przy użyciu Pythona 3)
 
 rm -f "$ZIP_PATH"
 if command -v python3 &> /dev/null; then
@@ -213,7 +216,7 @@ fi
 
 echo "[+] Paczka wygenerowana na Pulpicie: $ZIP_PATH"
 
-5. Klonowanie i push do repozytorium
+# 5. Klonowanie i push do repozytorium
 
 rm -rf "$REPO_DIR"
 echo "[+] Klonowanie repozytorium..."
